@@ -9,14 +9,16 @@ namespace eth_wwallet
 
         static async Task Main(string[] args)
         {
+            Console.WriteLine("Input number thread:");
+            int number = int.Parse(Console.ReadLine());
+
             // Biến để cache dữ liệu
             List<string> cachedData = new List<string>();
             HashSet<string> addData = new HashSet<string>();
             await AddData(Path.Combine(Environment.CurrentDirectory, "eth-list-address.txt"), addData);
             List<string> data = Wordlist.English.GetWords().ToList();
             // Tạo ra 5 Task để chạy hàm Check
-            int nnn = 3;
-            Task[] tasks = new Task[nnn];
+            Task[] tasks = new Task[number < 1 ? 1 : number];
             for (int i = 0; i < tasks.Length; i++)
             {
                 tasks[i] = Task.Run(async () =>
