@@ -1,6 +1,7 @@
 ﻿using NBitcoin;
 using Nethereum.HdWallet;
 using Nethereum.Web3;
+using System;
 
 namespace eth_wwallet
 {
@@ -32,69 +33,23 @@ namespace eth_wwallet
             await Task.WhenAll(tasks);
 
             Console.WriteLine("Tất cả các luồng đã hoàn thành.");
-            //    await Check(data, addData);
 
-
-            ////  List<string> data = await GetDataAsync(filePath1);
-            //List<string> rd = new List<string>();
-
-            //string mnemonicWords = "";
-            //int count = 0;
-            //int seedNum = 12;
-
-            //Random random = new Random();
-            //while (true)
-            //{
-
-            //    rd = new List<string>();
-            //    var listRd = new List<int>();
-            //    mnemonicWords = string.Empty;
-            //    for (int i = 0; i < seedNum; i++)
-            //    {
-            //        bool b = true;
-            //        while (b)
-            //        {
-            //            int randomIndex = random.Next(2048);
-            //            var check = listRd.Where(x => x == randomIndex);
-            //            if ((check == null || !check.Any()))
-            //            {
-            //                rd.Add(randomIndex.ToString());
-            //                listRd.Add(randomIndex);
-            //                mnemonicWords = mnemonicWords + " " + data[randomIndex];
-            //                b = false;
-            //            }
-            //        }
-
-            //    }
-            //    mnemonicWords = mnemonicWords.Trim();
-            //    if (!(!string.IsNullOrEmpty(mnemonicWords) && (mnemonicWords.Split(" ").Length == 12 || mnemonicWords.Split(" ").Length == 24))) continue;
-            //    try
-            //    {
-            //        count++;
-            //        var listAddress = new List<string>();
-
-            //        // Tạo một ví mới từ seed
-            //        Wallet wallet = new Wallet(mnemonicWords, null);
-            //        string accountAddress44 = wallet.GetAccount(0).Address;
-            //        if (!string.IsNullOrEmpty(accountAddress44))
-            //            listAddress.Add(accountAddress44);
-            //        Console.WriteLine($"[{count}]-{seedNum}");
-            //        // Tạo và kiểm tra các loại địa chỉ khác nhau
-            //        await DeriveAndCheckBalance(listAddress, filePath2, mnemonicWords);
-            //        //if (addData.Count > 0)
-            //        //    _ = Task.Run(async () =>
-            //        //{
-            //        //    await DeriveAndCheckBalance(listAddress, filePath2, mnemonicWords).ConfigureAwait(false);
-            //        //});
-            //    }
-            //    catch (Exception e)
-            //    {
-            //        Console.WriteLine("\nException Caught!");
-            //        Console.WriteLine("Message :{0} ", e.Message);
-            //    }
-            //}
         }
+        static int[] GetRandomNumbers(DateTime dateTime, int[] randomNumbers)
+        {
+            // Sử dụng dữ liệu từ DateTime để tạo seed cho Random
+            int seed = (int)(dateTime.Millisecond + dateTime.Second * 1000 + dateTime.Minute * 60000 + dateTime.Hour * 3600000 +
+                       dateTime.Day * 86400000 + dateTime.Month * 2678400000 + dateTime.Year * 31536000000);
+            // Tạo đối tượng Random với seed từ DateTime
+            Random random = new Random(seed);
+            // Tạo 12 số ngẫu nhiên và đưa vào mảng
+            for (int i = 0; i < 12; i++)
+            {
+                randomNumbers[i] = random.Next(2048);
+            }
 
+            return randomNumbers;
+        }
         static async Task Check(List<string> words, HashSet<string> addDataCheck)
         {
 
@@ -105,29 +60,41 @@ namespace eth_wwallet
             int seedNum = 12;
 
             Random random = new Random();
+
+            //
+            DateTime dateTime = new DateTime(2000, 1, 1);
+            int[] randomNumbers = new int[12];
             while (true)
             {
 
-                rd = new List<string>();
-                var listRd = new List<int>();
+              //  rd = new List<string>();
+             //   var listRd = new List<int>();
                 mnemonicWords = string.Empty;
-                for (int i = 0; i < seedNum; i++)
+                var nums = GetRandomNumbers(dateTime, randomNumbers);
+                foreach (var item in nums)
                 {
-                    bool b = true;
-                    while (b)
-                    {
-                        int randomIndex = random.Next(2048);
-                        var check = listRd.Where(x => x == randomIndex);
-                        if ((check == null || !check.Any()))
-                        {
-                            rd.Add(randomIndex.ToString());
-                            listRd.Add(randomIndex);
-                            mnemonicWords = mnemonicWords + " " + words[randomIndex];
-                            b = false;
-                        }
-                    }
-
+                    mnemonicWords = mnemonicWords + " " + words[item];
                 }
+                dateTime = dateTime.AddSeconds(1);
+
+
+                //for (int i = 0; i < seedNum; i++)
+                //{
+                //    bool b = true;
+                //    while (b)
+                //    {
+                //        int randomIndex = random.Next(2048);
+                //        var check = listRd.Where(x => x == randomIndex);
+                //        if ((check == null || !check.Any()))
+                //        {
+                //            rd.Add(randomIndex.ToString());
+                //            listRd.Add(randomIndex);
+                //            mnemonicWords = mnemonicWords + " " + words[randomIndex];
+                //            b = false;
+                //        }
+                //    }
+
+                //}
                 mnemonicWords = mnemonicWords.Trim();
                 if (!(!string.IsNullOrEmpty(mnemonicWords) && (mnemonicWords.Split(" ").Length == 12 || mnemonicWords.Split(" ").Length == 24))) continue;
                 try
