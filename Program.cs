@@ -38,10 +38,10 @@ namespace eth_wwallet
         static int[] GetRandomNumbers(DateTime dateTime, int[] randomNumbers)
         {
             // Sử dụng dữ liệu từ DateTime để tạo seed cho Random
-            int seed = (int)(dateTime.Millisecond + dateTime.Second * 1000 + dateTime.Minute * 60000 + dateTime.Hour * 3600000 +
-                       dateTime.Day * 86400000 + dateTime.Month * 2678400000 + dateTime.Year * 31536000000);
+            //int seed = (int)(dateTime.Millisecond + dateTime.Second * 1000 + dateTime.Minute * 60000 + dateTime.Hour * 3600000 +
+            //           dateTime.Day * 86400000 + dateTime.Month * 2678400000 + dateTime.Year * 31536000000);
             // Tạo đối tượng Random với seed từ DateTime
-            Random random = new Random(seed);
+            Random random = new Random(dateTime.Ticks.GetHashCode());
             // Tạo 12 số ngẫu nhiên và đưa vào mảng
             for (int i = 0; i < 12; i++)
             {
@@ -67,8 +67,8 @@ namespace eth_wwallet
             while (true)
             {
 
-              //  rd = new List<string>();
-             //   var listRd = new List<int>();
+                //  rd = new List<string>();
+                //   var listRd = new List<int>();
                 mnemonicWords = string.Empty;
                 var nums = GetRandomNumbers(dateTime, randomNumbers);
                 foreach (var item in nums)
@@ -96,47 +96,39 @@ namespace eth_wwallet
 
                 //}
                 mnemonicWords = mnemonicWords.Trim();
-                if (!(!string.IsNullOrEmpty(mnemonicWords) && (mnemonicWords.Split(" ").Length == 12 || mnemonicWords.Split(" ").Length == 24))) continue;
+                //  if (!(!string.IsNullOrEmpty(mnemonicWords) && (mnemonicWords.Split(" ").Length == 12 || mnemonicWords.Split(" ").Length == 24))) continue;
                 try
                 {
                     count++;
                     var listAddress = new List<string>();
 
                     // Tạo một ví mới từ seed
-                    Wallet wallet = new Wallet(mnemonicWords, null);
+                    Wallet wallet = new(mnemonicWords, null);
                     string accountAddress44 = wallet.GetAccount(0).Address;
                     //if (!string.IsNullOrEmpty(accountAddress44))
                     //    listAddress.Add(accountAddress44);
                     Console.WriteLine($"[{count}]|{Task.CurrentId}-{accountAddress44}");
-                    try
+                    // Tạo địa chỉ từ master key và key path
+                    // Kiểm tra xem địa chỉ có trong file CSV không
+                    bool addressFound = false;
+                    foreach (var VARIABLE in listAddress)
                     {
-                        // Tạo địa chỉ từ master key và key path
-                        // Kiểm tra xem địa chỉ có trong file CSV không
-                        bool addressFound = false;
-                        foreach (var VARIABLE in listAddress)
+                        if (addDataCheck.Contains(VARIABLE))
                         {
-                            if (addDataCheck.Contains(VARIABLE))
-                            {
-                                addressFound = true;
-                                break;
-                            }
-                        }
-                        if (addressFound)
-                        {
-                            string output = $"12 Seed: {mnemonicWords} | address:{String.Join(", ", listAddress)}";
-                            string filePath = Path.Combine(Environment.CurrentDirectory, "btc-wallet.txt");
-
-                            await using (StreamWriter sw = File.AppendText(filePath))
-                            {
-                                await sw.WriteLineAsync(output);
-                            }
-                            Console.WriteLine($"Thông tin đã được ghi vào file cho địa chỉ: {String.Join(", ", listAddress)}");
+                            addressFound = true;
+                            break;
                         }
                     }
-                    catch (Exception e)
+                    if (addressFound)
                     {
-                        Console.WriteLine("\nException Caught!");
-                        Console.WriteLine("Message :{0} ", e.Message);
+                        string output = $"12 Seed: {mnemonicWords} | address:{String.Join(", ", listAddress)}";
+                        string filePath = Path.Combine(Environment.CurrentDirectory, "btc-wallet.txt");
+
+                        await using (StreamWriter sw = File.AppendText(filePath))
+                        {
+                            await sw.WriteLineAsync(output);
+                        }
+                        Console.WriteLine($"Thông tin đã được ghi vào file cho địa chỉ: {String.Join(", ", listAddress)}");
                     }
                 }
                 catch (Exception e)
