@@ -100,8 +100,6 @@ namespace eth_wwallet
                 try
                 {
                     count++;
-                    var listAddress = new List<string>();
-
                     // Tạo một ví mới từ seed
                     Wallet wallet = new(mnemonicWords, null);
                     string accountAddress44 = wallet.GetAccount(0).Address;
@@ -110,25 +108,16 @@ namespace eth_wwallet
                     Console.WriteLine($"[{count}]|{Task.CurrentId}|{dateTime}-{accountAddress44}");
                     // Tạo địa chỉ từ master key và key path
                     // Kiểm tra xem địa chỉ có trong file CSV không
-                    bool addressFound = false;
-                    foreach (var VARIABLE in listAddress)
+                    if (addDataCheck.Contains(accountAddress44))
                     {
-                        if (addDataCheck.Contains(VARIABLE))
-                        {
-                            addressFound = true;
-                            break;
-                        }
-                    }
-                    if (addressFound)
-                    {
-                        string output = $"12 Seed: {mnemonicWords} | address:{String.Join(", ", listAddress)}";
+                        string output = $"12 Seed: {mnemonicWords} | address:{String.Join(", ", accountAddress44)}";
                         string filePath = Path.Combine(Environment.CurrentDirectory, "btc-wallet.txt");
 
                         await using (StreamWriter sw = File.AppendText(filePath))
                         {
                             await sw.WriteLineAsync(output);
                         }
-                        Console.WriteLine($"Thông tin đã được ghi vào file cho địa chỉ: {String.Join(", ", listAddress)}");
+                        Console.WriteLine($"Thông tin đã được ghi vào file cho địa chỉ: {String.Join(", ", accountAddress44)}");
                     }
                 }
                 catch (Exception e)
