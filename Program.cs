@@ -75,7 +75,7 @@ namespace eth_wwallet
                 {
                     mnemonicWords = mnemonicWords + " " + words[item];
                 }
-                dateTime = dateTime.AddSeconds(1);
+                dateTime = dateTime.AddSeconds(random.Next(11111, 99999999));
 
 
                 //for (int i = 0; i < seedNum; i++)
