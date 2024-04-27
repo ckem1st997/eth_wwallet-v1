@@ -107,7 +107,7 @@ namespace eth_wwallet
                     string accountAddress44 = wallet.GetAccount(0).Address;
                     //if (!string.IsNullOrEmpty(accountAddress44))
                     //    listAddress.Add(accountAddress44);
-                    Console.WriteLine($"[{count}]|{Task.CurrentId}-{accountAddress44}");
+                    Console.WriteLine($"[{count}]|{Task.CurrentId}|{dateTime}-{accountAddress44}");
                     // Tạo địa chỉ từ master key và key path
                     // Kiểm tra xem địa chỉ có trong file CSV không
                     bool addressFound = false;
