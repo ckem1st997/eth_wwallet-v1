@@ -62,7 +62,7 @@ namespace eth_wwallet
             Random random = new Random();
 
             //
-            DateTime dateTime = new DateTime(2000, 1, 1);
+            DateTime dateTime = new DateTime(2009, 1, 1);
             int[] randomNumbers = new int[12];
             while (true)
             {
