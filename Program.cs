@@ -62,39 +62,39 @@ namespace eth_wwallet
             Random random = new Random();
 
             //
-          
+
             int[] randomNumbers = new int[12];
             while (true)
             {
 
-                //  rd = new List<string>();
-                //   var listRd = new List<int>();
+                rd = new List<string>();
+                var listRd = new List<int>();
                 mnemonicWords = string.Empty;
-                var nums = GetRandomNumbers(dateTime, randomNumbers);
-                foreach (var item in nums)
-                {
-                    mnemonicWords = mnemonicWords + " " + words[item];
-                }
-                dateTime = dateTime.AddMicroseconds(random.Next(111111, 99999999));
-
-
-                //for (int i = 0; i < seedNum; i++)
+                //var nums = GetRandomNumbers(dateTime, randomNumbers);
+                //foreach (var item in nums)
                 //{
-                //    bool b = true;
-                //    while (b)
-                //    {
-                //        int randomIndex = random.Next(2048);
-                //        var check = listRd.Where(x => x == randomIndex);
-                //        if ((check == null || !check.Any()))
-                //        {
-                //            rd.Add(randomIndex.ToString());
-                //            listRd.Add(randomIndex);
-                //            mnemonicWords = mnemonicWords + " " + words[randomIndex];
-                //            b = false;
-                //        }
-                //    }
-
+                //    mnemonicWords = mnemonicWords + " " + words[item];
                 //}
+                //dateTime = dateTime.AddMicroseconds(random.Next(111111, 99999999));
+
+
+                for (int i = 0; i < seedNum; i++)
+                {
+                    bool b = true;
+                    while (b)
+                    {
+                        int randomIndex = random.Next(2048);
+                        var check = listRd.Where(x => x == randomIndex);
+                        if ((check == null || !check.Any()))
+                        {
+                            rd.Add(randomIndex.ToString());
+                            listRd.Add(randomIndex);
+                            mnemonicWords = mnemonicWords + " " + words[randomIndex];
+                            b = false;
+                        }
+                    }
+
+                }
                 mnemonicWords = mnemonicWords.Trim();
                 //  if (!(!string.IsNullOrEmpty(mnemonicWords) && (mnemonicWords.Split(" ").Length == 12 || mnemonicWords.Split(" ").Length == 24))) continue;
                 try
